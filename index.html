@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proof Sheet</title>
+<meta name="description" content="Turn screenshots into clean side-by-side portfolio mockups. Upload images, pick a background, download the PNG.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --canvas:#EEEAE2; --surface:#FFFFFF; --surface-2:#F6F1E6;
+  --ink:#221F1B; --ink-soft:#766F5C; --line:#DED5C2;
+  --accent:#3C6E5C; --accent-ink:#F4FAF7; --accent-soft:#E1ECE6;
+  --brass:#B8843C; --danger:#AE4A3C; --danger-soft:#F4E3DF;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --canvas:#141A16; --surface:#1C2420; --surface-2:#212A25;
+    --ink:#ECE9E2; --ink-soft:#97A39A; --line:#2B352F;
+    --accent:#6FBF9E; --accent-ink:#0C1511; --accent-soft:#213128;
+    --brass:#D9A860; --danger:#E28577; --danger-soft:#3A241F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --canvas:#141A16; --surface:#1C2420; --surface-2:#212A25;
+  --ink:#ECE9E2; --ink-soft:#97A39A; --line:#2B352F;
+  --accent:#6FBF9E; --accent-ink:#0C1511; --accent-soft:#213128;
+  --brass:#D9A860; --danger:#E28577; --danger-soft:#3A241F;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;min-width:0}
+html,body{overflow-x:hidden}
+body{background:var(--canvas);color:var(--ink);font-family:'Manrope',sans-serif;padding-inline:16px;margin:0}
+.page{max-width:1180px;margin-inline:auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
+.mono{font-family:'IBM Plex Mono',monospace}
+header.top{display:flex;flex-direction:column;gap:6px}
+.brand{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(28px,5vw,38px);letter-spacing:-.01em;margin:0}
+.tagline{color:var(--ink-soft);font-size:15px;max-width:52ch;margin:0}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start}
+@media (max-width:860px){.layout{grid-template-columns:1fr}}
+.rail,.stage{min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
+.rail{display:flex;flex-direction:column;gap:18px}
+.section-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 10px}
+.dropzone{border:1.5px dashed var(--line);border-radius:12px;padding:20px 14px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.dropzone:hover,.dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.dropzone p{margin:0;font-size:13.5px;color:var(--ink-soft)}
+.dropzone strong{color:var(--ink);display:block;margin-bottom:3px;font-size:14.5px}
+#file-input{display:none}
+.img-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.split-tool{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.split-label{font-size:12.5px;color:var(--ink-soft);margin:0 0 10px}
+.split-row{display:flex;align-items:center;gap:8px}
+.split-row .btn{padding:9px 14px;font-size:13px}
+.split-row input[type=number]{width:52px;padding:8px 6px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center}
+.split-row .note{font-size:13px;color:var(--ink-soft)}
+.img-row{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:7px 9px}
+.img-row img,.img-row canvas{width:40px;height:40px;object-fit:cover;border-radius:7px;flex:none;border:1px solid var(--line)}
+.img-meta{flex:1;min-width:0}
+.img-meta .name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+.img-meta .dims{font-size:11px;color:var(--ink-soft)}
+.chip{font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--brass);background:color-mix(in srgb, var(--brass) 16%, transparent);border-radius:5px;padding:2px 6px;flex:none}
+.iconbtn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:26px;height:26px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex:none;transition:background .15s,color .15s,border-color .15s}
+.iconbtn:hover{background:var(--accent-soft);border-color:var(--accent)}
+.iconbtn.danger:hover{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+.iconbtn:disabled{opacity:.35;cursor:default}
+.iconbtn:disabled:hover{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.row-actions{display:flex;gap:4px;flex:none}
+.field{display:flex;flex-direction:column;gap:8px}
+.field-top{display:flex;justify-content:space-between;align-items:baseline}
+.field label{font-size:13px;font-weight:600}
+.field .val{font-size:12.5px;color:var(--ink-soft)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.swatches{display:flex;flex-wrap:wrap;gap:8px}
+.swatch{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);padding:0}
+.swatch.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.custom-stops{display:flex;align-items:center;gap:8px;margin-top:4px}
+.custom-stops input[type=color]{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);padding:0;background:none;cursor:pointer}
+.custom-stops span{font-size:12px;color:var(--ink-soft)}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;appearance:none;border:none;background:var(--surface);color:var(--ink-soft);font-family:inherit;font-size:13px;font-weight:600;padding:9px 6px;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:none}
+.seg button.active{background:var(--accent-soft);color:var(--accent)}
+.stage{display:flex;flex-direction:column;gap:14px}
+.canvas-wrap{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:center;min-height:220px;min-width:0;width:100%;overflow:hidden}
+#stage-canvas{width:100%;max-width:100%;height:auto;border-radius:10px;display:block;min-width:0}
+.empty-hint{color:var(--ink-soft);font-size:14px;text-align:center;padding:40px 20px}
+.readout{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft)}
+.readout b{color:var(--ink);font-weight:600}
+.cta-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;padding:11px 18px;border-radius:11px;cursor:pointer;transition:transform .1s,background .15s}
+.btn:hover{background:var(--surface-2)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-primary:disabled{opacity:.45;cursor:default;filter:none}
+.btn-ghost{border-color:transparent;color:var(--ink-soft)}
+.btn-ghost:hover{background:var(--surface-2);color:var(--ink)}
+.note{font-size:12.5px;color:var(--ink-soft)}
+.gallery h2{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0 0 4px}
+.gallery .note{margin-bottom:14px}
+.strip{display:flex;flex-wrap:wrap;gap:14px}
+.gcard{width:168px;background:var(--surface);border:1px solid var(--line);border-radius:13px;overflow:hidden;display:flex;flex-direction:column}
+.gcard .thumb{width:100%;height:96px;object-fit:cover;background:var(--surface-2);display:block}
+.gcard .gbody{padding:10px;display:flex;flex-direction:column;gap:7px}
+.gcard .gdims{font-size:11px;color:var(--ink-soft)}
+.gcard .grow{display:flex;gap:6px}
+.gcard .grow .btn{flex:1;padding:7px 8px;font-size:12px;border-radius:8px}
+.gempty{color:var(--ink-soft);font-size:13.5px;padding:10px 2px}
+footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;font-size:12.5px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="top">
+    <h1 class="brand">Proof Sheet</h1>
+    <p class="tagline">Turn two or more screenshots into a clean side-by-side comparison card for your portfolio. Same width, same height, nothing stretched — the taller one is cropped automatically.</p>
+  </header>
+
+  <div class="layout">
+    <div class="rail">
+      <div class="panel">
+        <p class="section-label">Screenshots</p>
+        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload screenshots">
+          <strong>Drop screenshots here</strong>
+          <p>or click to choose files · PNG or JPG, 2 or more, left to right</p>
+        </div>
+        <input id="file-input" type="file" accept="image/*" multiple>
+        <div class="img-list" id="img-list"></div>
+        <div class="split-tool">
+          <p class="split-label">Or split one tall screenshot into side-by-side panels</p>
+          <div class="split-row">
+            <button class="btn" id="split-pick-btn" type="button">Choose image</button>
+            <input type="number" id="split-count" min="2" max="8" value="2">
+            <span class="note">panels</span>
+          </div>
+          <input id="split-file-input" type="file" accept="image/*" style="display:none">
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="section-label">Background</p>
+        <div class="swatches" id="swatches"></div>
+        <div class="custom-stops">
+          <input type="color" id="custom1" value="#efe4d2" title="First color">
+          <input type="color" id="custom2" value="#d8c6a8" title="Second color">
+          <span>custom gradient</span>
+        </div>
+      </div>
+
+      <div class="panel" style="display:flex;flex-direction:column;gap:18px">
+        <p class="section-label" style="margin-bottom:0">Card settings</p>
+        <div class="field">
+          <div class="field-top"><label for="width-slider">Card width</label><span class="val mono" id="width-val">800 px</span></div>
+          <input type="range" id="width-slider" min="300" max="1400" step="10" value="800">
+        </div>
+        <div class="field">
+          <div class="field-top"><label for="gap-slider">Gap between cards</label><span class="val mono" id="gap-val">60 px</span></div>
+          <input type="range" id="gap-slider" min="0" max="160" step="4" value="60">
+        </div>
+        <div class="field">
+          <div class="field-top"><label for="margin-slider">Outer margin</label><span class="val mono" id="margin-val">100 px</span></div>
+          <input type="range" id="margin-slider" min="30" max="220" step="5" value="100">
+        </div>
+        <div class="field">
+          <label>Keep this part when cropping</label>
+          <div class="seg" id="align-seg">
+            <button data-align="top" class="active">Top</button>
+            <button data-align="center">Center</button>
+            <button data-align="bottom">Bottom</button>
+          </div>
+        </div>
+        <button class="btn btn-ghost" id="reset-btn" style="align-self:flex-start">Start over</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="canvas-wrap" id="canvas-wrap">
+        <canvas id="stage-canvas"></canvas>
+      </div>
+      <div class="readout mono" id="readout"></div>
+      <div class="cta-row">
+        <button class="btn btn-primary" id="save-btn">Add to my mockups &amp; download</button>
+        <span class="note" id="save-note"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="gallery panel">
+    <h2>My mockups</h2>
+    <p class="note">Everything you've made this session. Click Download again anytime to save it once more.</p>
+    <div class="strip" id="gallery-strip"><p class="gempty">Nothing here yet — build a mockup above and add it here.</p></div>
+  </div>
+</div>
+
+<footer class="site">Proof Sheet &middot; runs entirely in your browser, nothing is uploaded anywhere</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  const PRESETS = {
+    beige:    ["#efe4d2", "#d8c6a8"],
+    sand:     ["#f2e2c8", "#d9b98a"],
+    white:    ["#ffffff", "#e7eaf0"],
+    coral:    ["#ffb199", "#e8694a"],
+    amber:    ["#ffd98a", "#e0a23c"],
+    rose:     ["#f7c6d9", "#d6587f"],
+    pink:     ["#ffd9e6", "#f6a9c4"],
+    sage:     ["#d7e4c5", "#a8bd84"],
+    mint:     ["#dff3e6", "#b9dcc4"],
+    teal:     ["#cdeee6", "#4fae9a"],
+    sky:      ["#cfe8fb", "#7fb8e8"],
+    lavender: ["#e3d9f5", "#b79fdb"],
+    navy:     ["#16264f", "#060b1f"],
+    charcoal: ["#3a3f47", "#1b1e22"],
+  };
+
+  const state = {
+    images: [],            // {src, width, height, name, demo}
+    bg: "beige",
+    customStops: ["#efe4d2", "#d8c6a8"],
+    cardWidth: 800,
+    gap: 60,
+    margin: 100,
+    align: "top",
+    saved: [],              // {blob, url, filename, w, h}
+  };
+
+  // ---------- demo placeholder generator ----------
+  function drawWireframe(w, h, accent, label){
+    const c = document.createElement("canvas");
+    c.width = w; c.height = h;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0,0,w,h);
+    ctx.fillStyle = "#f3f4f6"; ctx.fillRect(0,0,w,64);
+    ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(32,32,12,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#cbd2d9";
+    [0,1,2].forEach(i => ctx.fillRect(w-220+i*70, 27, 46, 10));
+    ctx.fillStyle = "#e5e7eb"; ctx.fillRect(40,110,w*0.55,26);
+    ctx.fillRect(40,148,w*0.38,26);
+    ctx.fillStyle = "#9aa3ad"; ctx.fillRect(40,198,w*0.42,14);
+    ctx.fillStyle = accent; ctx.fillRect(40,232,150,42);
+    ctx.fillStyle = "#eef1f4"; ctx.fillRect(40,300,w-80,220);
+    let y = 560;
+    while (y < h - 140) {
+      const colW = (w - 80 - 2*24) / 3;
+      for (let i=0;i<3;i++){
+        const x = 40 + i*(colW+24);
+        ctx.fillStyle = "#f3f4f6"; ctx.fillRect(x, y, colW, 170);
+        ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(x+26, y+30, 10, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = "#cbd2d9"; ctx.fillRect(x+14, y+60, colW-28, 10);
+        ctx.fillStyle = "#e5e7eb"; ctx.fillRect(x+14, y+80, colW-50, 8);
+      }
+      y += 200;
+    }
+    ctx.fillStyle = "#1f2937"; ctx.fillRect(0, h-80, w, 80);
+    ctx.fillStyle = "rgba(0,0,0,.28)";
+    ctx.font = "600 13px sans-serif";
+    ctx.fillText(label, 14, 18);
+    return c;
+  }
+
+  function loadDemoImages(){
+    const a = drawWireframe(900, 1820, "#4C7EF3", "Example A");
+    const b = drawWireframe(900, 1280, "#2EAF8B", "Example B");
+    state.images = [
+      { src: a, width: a.width, height: a.height, name: "Example A", demo: true },
+      { src: b, width: b.width, height: b.height, name: "Example B", demo: true },
+    ];
+  }
+
+  // ---------- layout + draw ----------
+  function layout(){
+    const imgs = state.images;
+    if (imgs.length < 2) return null;
+    const scaledH = imgs.map(im => state.cardWidth * im.height / im.width);
+    const cardH = Math.floor(Math.min.apply(null, scaledH));
+    const totalW = state.margin*2 + state.cardWidth*imgs.length + state.gap*(imgs.length-1);
+    const totalH = cardH + state.margin*2;
+    return { cardH, totalW, totalH, scaledH };
+  }
+
+  function roundRectPath(ctx,x,y,w,h,r){
+    const rr = Math.min(r, w/2, h/2);
+    ctx.beginPath();
+    ctx.moveTo(x+rr,y);
+    ctx.arcTo(x+w,y,x+w,y+h,rr);
+    ctx.arcTo(x+w,y+h,x,y+h,rr);
+    ctx.arcTo(x,y+h,x,y,rr);
+    ctx.arcTo(x,y,x+w,y,rr);
+    ctx.closePath();
+  }
+
+  function currentStops(){
+    return state.bg === "custom" ? state.customStops : PRESETS[state.bg];
+  }
+
+  function render(){
+    const canvas = document.getElementById("stage-canvas");
+    const wrap = document.getElementById("canvas-wrap");
+    const readout = document.getElementById("readout");
+    const saveBtn = document.getElementById("save-btn");
+    const L = layout();
+
+    if (!L){
+      canvas.style.display = "none";
+      let hint = wrap.querySelector(".empty-hint");
+      if (!hint){ hint = document.createElement("div"); hint.className = "empty-hint"; wrap.appendChild(hint); }
+      hint.textContent = "Add at least 2 screenshots to see a preview.";
+      readout.textContent = "";
+      saveBtn.disabled = true;
+      return;
+    }
+    const hint = wrap.querySelector(".empty-hint");
+    if (hint) hint.remove();
+    canvas.style.display = "block";
+    saveBtn.disabled = false;
+
+    canvas.width = L.totalW;
+    canvas.height = L.totalH;
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+
+    const [s1, s2] = currentStops();
+    const grad = ctx.createLinearGradient(0,0,L.totalW,L.totalH);
+    grad.addColorStop(0, s1); grad.addColorStop(1, s2);
+    ctx.fillStyle = grad; ctx.fillRect(0,0,L.totalW,L.totalH);
+
+    let x = state.margin;
+    const y = state.margin;
+    const pad = 12, pocketR = 26, clipR = 18;
+
+    state.images.forEach((im, i) => {
+      const scaledH = state.cardWidth * im.height / im.width;
+
+      roundRectPath(ctx, x-pad, y-pad, state.cardWidth+pad*2, L.cardH+pad*2, pocketR);
+      const pg = ctx.createLinearGradient(x-pad, y-pad, x+state.cardWidth+pad, y+L.cardH+pad);
+      pg.addColorStop(0, "rgba(0,0,0,.12)"); pg.addColorStop(1, "rgba(255,255,255,.3)");
+      ctx.fillStyle = pg; ctx.fill();
+
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,.30)"; ctx.shadowBlur = 50; ctx.shadowOffsetY = 20;
+      roundRectPath(ctx, x, y, state.cardWidth, L.cardH, clipR);
+      ctx.fillStyle = "#000"; ctx.fill();
+      ctx.restore();
+
+      ctx.save();
+      roundRectPath(ctx, x, y, state.cardWidth, L.cardH, clipR);
+      ctx.clip();
+      let dy;
+      if (state.align === "top") dy = y;
+      else if (state.align === "bottom") dy = y - (scaledH - L.cardH);
+      else dy = y - (scaledH - L.cardH) / 2;
+      ctx.drawImage(im.src, x, dy, state.cardWidth, scaledH);
+      ctx.restore();
+
+      x += state.cardWidth + state.gap;
+    });
+
+    readout.innerHTML =
+      "<span>Card <b>" + state.cardWidth + " × " + L.cardH + " px</b></span>" +
+      "<span>Canvas <b>" + L.totalW + " × " + L.totalH + " px</b></span>" +
+      "<span><b>" + state.images.length + "</b> image" + (state.images.length===1?"":"s") + "</span>";
+  }
+
+  // ---------- image list UI ----------
+  function renderImgList(){
+    const list = document.getElementById("img-list");
+    list.innerHTML = "";
+    state.images.forEach((im, i) => {
+      const row = document.createElement("div");
+      row.className = "img-row";
+
+      let thumb;
+      if (im.src instanceof HTMLCanvasElement){
+        thumb = document.createElement("canvas");
+        thumb.width = 40; thumb.height = 40;
+        thumb.getContext("2d").drawImage(im.src, 0, 0, 40, 40);
+      } else {
+        thumb = document.createElement("img");
+        thumb.src = im._thumbUrl;
+      }
+      row.appendChild(thumb);
+
+      const meta = document.createElement("div");
+      meta.className = "img-meta";
+      meta.innerHTML =
+        '<div class="name">' + (im.demo ? '<span class="chip">Example</span>' : '') +
+        '<span>' + escapeHtml(im.name) + '</span></div>' +
+        '<div class="dims mono">' + im.width + ' × ' + im.height + ' px</div>';
+      row.appendChild(meta);
+
+      const actions = document.createElement("div");
+      actions.className = "row-actions";
+      const left = iconBtn("◀", i===0, () => moveImg(i,-1));
+      const right = iconBtn("▶", i===state.images.length-1, () => moveImg(i,1));
+      const del = iconBtn("×", false, () => removeImg(i));
+      del.classList.add("danger");
+      actions.append(left, right, del);
+      row.appendChild(actions);
+
+      list.appendChild(row);
+    });
+  }
+
+  function iconBtn(label, disabled, onClick){
+    const b = document.createElement("button");
+    b.className = "iconbtn"; b.textContent = label; b.disabled = disabled;
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  function escapeHtml(s){
+    const d = document.createElement("div"); d.textContent = s; return d.innerHTML;
+  }
+
+  function moveImg(i, dir){
+    const j = i + dir;
+    if (j < 0 || j >= state.images.length) return;
+    const tmp = state.images[i]; state.images[i] = state.images[j]; state.images[j] = tmp;
+    renderImgList(); render();
+  }
+
+  function removeImg(i){
+    const im = state.images[i];
+    if (im._thumbUrl) URL.revokeObjectURL(im._thumbUrl);
+    state.images.splice(i,1);
+    renderImgList(); render();
+  }
+
+  // ---------- file handling ----------
+  async function addFiles(fileList){
+    const files = Array.from(fileList).filter(f => f.type.startsWith("image/"));
+    if (!files.length) return;
+    if (state.images.length && state.images[0].demo) state.images = [];
+    for (const f of files){
+      try{
+        const bitmap = await createImageBitmap(f);
+        const thumbUrl = URL.createObjectURL(f);
+        state.images.push({ src: bitmap, width: bitmap.width, height: bitmap.height, name: f.name, demo: false, _thumbUrl: thumbUrl });
+      } catch(e){ /* skip a file that failed to decode */ }
+    }
+    renderImgList(); render();
+  }
+
+  // ---------- split one tall image into panels ----------
+  async function splitImage(file, count){
+    let bitmap;
+    try { bitmap = await createImageBitmap(file); } catch(e){ return; }
+    const sliceH = Math.floor(bitmap.height / count);
+    const newImages = [];
+    for (let i=0;i<count;i++){
+      const h = (i === count-1) ? (bitmap.height - sliceH*(count-1)) : sliceH;
+      const c = document.createElement("canvas");
+      c.width = bitmap.width; c.height = h;
+      c.getContext("2d").drawImage(bitmap, 0, i*sliceH, bitmap.width, h, 0, 0, bitmap.width, h);
+      newImages.push({ src: c, width: c.width, height: c.height, name: "Panel " + (i+1), demo: false });
+    }
+    state.images.forEach(im => im._thumbUrl && URL.revokeObjectURL(im._thumbUrl));
+    state.images = newImages;
+    renderImgList(); render();
+  }
+
+  // ---------- controls ----------
+  function buildSwatches(){
+    const wrap = document.getElementById("swatches");
+    Object.keys(PRESETS).forEach(key => {
+      const [a,b] = PRESETS[key];
+      const btn = document.createElement("button");
+      btn.className = "swatch" + (state.bg === key ? " active" : "");
+      btn.style.background = "linear-gradient(135deg," + a + "," + b + ")";
+      btn.title = key;
+      btn.addEventListener("click", () => {
+        state.bg = key;
+        [...wrap.children].forEach(c => c.classList.remove("active"));
+        btn.classList.add("active");
+        render();
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  function wireControls(){
+    const widthSlider = document.getElementById("width-slider");
+    const gapSlider = document.getElementById("gap-slider");
+    const marginSlider = document.getElementById("margin-slider");
+
+    widthSlider.addEventListener("input", () => {
+      state.cardWidth = Number(widthSlider.value);
+      document.getElementById("width-val").textContent = state.cardWidth + " px";
+      render();
+    });
+    gapSlider.addEventListener("input", () => {
+      state.gap = Number(gapSlider.value);
+      document.getElementById("gap-val").textContent = state.gap + " px";
+      render();
+    });
+    marginSlider.addEventListener("input", () => {
+      state.margin = Number(marginSlider.value);
+      document.getElementById("margin-val").textContent = state.margin + " px";
+      render();
+    });
+
+    document.getElementById("align-seg").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-align]");
+      if (!btn) return;
+      state.align = btn.dataset.align;
+      [...e.currentTarget.children].forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    });
+
+    const c1 = document.getElementById("custom1"), c2 = document.getElementById("custom2");
+    function applyCustom(){
+      state.customStops = [c1.value, c2.value];
+      state.bg = "custom";
+      document.querySelectorAll(".swatch").forEach(s => s.classList.remove("active"));
+      render();
+    }
+    c1.addEventListener("input", applyCustom);
+    c2.addEventListener("input", applyCustom);
+
+    const dz = document.getElementById("dropzone");
+    const fileInput = document.getElementById("file-input");
+    dz.addEventListener("click", () => fileInput.click());
+    dz.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") fileInput.click(); });
+    fileInput.addEventListener("change", () => addFiles(fileInput.files));
+    ["dragenter","dragover"].forEach(ev => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.add("drag"); }));
+    ["dragleave","drop"].forEach(ev => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.remove("drag"); }));
+    dz.addEventListener("drop", (e) => addFiles(e.dataTransfer.files));
+
+    const splitPickBtn = document.getElementById("split-pick-btn");
+    const splitFileInput = document.getElementById("split-file-input");
+    const splitCount = document.getElementById("split-count");
+    splitPickBtn.addEventListener("click", () => splitFileInput.click());
+    splitFileInput.addEventListener("change", () => {
+      const f = splitFileInput.files[0];
+      if (!f) return;
+      const count = Math.max(2, Math.min(8, Number(splitCount.value) || 2));
+      splitImage(f, count);
+      splitFileInput.value = "";
+    });
+
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      state.images.forEach(im => im._thumbUrl && URL.revokeObjectURL(im._thumbUrl));
+      loadDemoImages();
+      renderImgList(); render();
+    });
+  }
+
+  // ---------- save / gallery (plain browser download, works on GitHub Pages or any host) ----------
+  function canvasToBlob(canvas){
+    return new Promise(res => canvas.toBlob(res, "image/png"));
+  }
+
+  function downloadBlob(filename, blob){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+
+  async function handleSave(){
+    const canvas = document.getElementById("stage-canvas");
+    const note = document.getElementById("save-note");
+    const saveBtn = document.getElementById("save-btn");
+    if (!layout()) return;
+
+    saveBtn.disabled = true;
+    const blob = await canvasToBlob(canvas);
+    const filename = "mockup-" + state.images.length + "up-" + state.bg + "-" + Date.now().toString(36).slice(-5) + ".png";
+    const url = URL.createObjectURL(blob);
+    const entry = { blob, url, filename, w: canvas.width, h: canvas.height };
+    state.saved.unshift(entry);
+    renderGallery();
+
+    downloadBlob(filename, blob);
+    note.textContent = "Downloaded.";
+    saveBtn.disabled = false;
+  }
+
+  function resaveEntry(entry){
+    downloadBlob(entry.filename, entry.blob);
+  }
+
+  function renderGallery(){
+    const strip = document.getElementById("gallery-strip");
+    if (!state.saved.length){
+      strip.innerHTML = '<p class="gempty">Nothing here yet — build a mockup above and add it here.</p>';
+      return;
+    }
+    strip.innerHTML = "";
+    state.saved.forEach((entry, idx) => {
+      const card = document.createElement("div");
+      card.className = "gcard";
+      const img = document.createElement("img");
+      img.className = "thumb"; img.src = entry.url;
+      const body = document.createElement("div");
+      body.className = "gbody";
+      body.innerHTML = '<div class="gdims mono">' + entry.w + ' × ' + entry.h + ' px</div>';
+      const rowBtns = document.createElement("div");
+      rowBtns.className = "grow";
+      const saveAgain = document.createElement("button");
+      saveAgain.className = "btn"; saveAgain.textContent = "Download";
+      saveAgain.addEventListener("click", () => resaveEntry(entry));
+      const remove = document.createElement("button");
+      remove.className = "btn btn-ghost"; remove.textContent = "Remove";
+      remove.addEventListener("click", () => {
+        URL.revokeObjectURL(entry.url);
+        state.saved.splice(idx,1);
+        renderGallery();
+      });
+      rowBtns.append(saveAgain, remove);
+      body.appendChild(rowBtns);
+      card.append(img, body);
+      strip.appendChild(card);
+    });
+  }
+
+  // ---------- init ----------
+  loadDemoImages();
+  buildSwatches();
+  wireControls();
+  document.getElementById("save-btn").addEventListener("click", handleSave);
+  renderImgList();
+  render();
+})();
+</script>
+</body>
+</html>
