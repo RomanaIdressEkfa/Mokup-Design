@@ -3,49 +3,83 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Proof Sheet</title>
-<meta name="description" content="Turn screenshots into clean side-by-side portfolio mockups. Upload images, pick a background, download the PNG.">
+<title>Proof Sheet — Mockup Studio</title>
+<meta name="description" content="Turn screenshots into clean side-by-side portfolio mockups. Deep gradient presets, grain texture, dark mode. Upload images, pick a background, download the PNG.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 :root{
-  --canvas:#EEEAE2; --surface:#FFFFFF; --surface-2:#F6F1E6;
-  --ink:#221F1B; --ink-soft:#766F5C; --line:#DED5C2;
-  --accent:#3C6E5C; --accent-ink:#F4FAF7; --accent-soft:#E1ECE6;
-  --brass:#B8843C; --danger:#AE4A3C; --danger-soft:#F4E3DF;
+  --canvas:#F3EEE3; --surface:#FFFFFF; --surface-2:#F7F2E7; --surface-3:#EFE6D2;
+  --ink:#201C17; --ink-soft:#73695A; --ink-faint:#A79C87; --line:#E3D9C4; --line-strong:#CBB99B;
+  --accent:#2F6B52; --accent-2:#B8843C; --accent-ink:#F4FAF7; --accent-soft:#E1ECE4;
+  --danger:#AE4A3C; --danger-soft:#F4E3DF;
+  --shadow-ambient: 32 26 18;
+  --decor-op:.26;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --canvas:#141A16; --surface:#1C2420; --surface-2:#212A25;
-    --ink:#ECE9E2; --ink-soft:#97A39A; --line:#2B352F;
-    --accent:#6FBF9E; --accent-ink:#0C1511; --accent-soft:#213128;
-    --brass:#D9A860; --danger:#E28577; --danger-soft:#3A241F;
+    --canvas:#121713; --surface:#1A2119; --surface-2:#1F271F; --surface-3:#242D25;
+    --ink:#ECE9E1; --ink-soft:#9AA79C; --ink-faint:#5D6A5F; --line:#283026; --line-strong:#39443A;
+    --accent:#6FCB9F; --accent-2:#E0B36B; --accent-ink:#0B1310; --accent-soft:#1E3024;
+    --danger:#E28577; --danger-soft:#3A241F;
+    --shadow-ambient: 0 0 0;
+    --decor-op:.16;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
-  --canvas:#141A16; --surface:#1C2420; --surface-2:#212A25;
-  --ink:#ECE9E2; --ink-soft:#97A39A; --line:#2B352F;
-  --accent:#6FBF9E; --accent-ink:#0C1511; --accent-soft:#213128;
-  --brass:#D9A860; --danger:#E28577; --danger-soft:#3A241F;
+  --canvas:#121713; --surface:#1A2119; --surface-2:#1F271F; --surface-3:#242D25;
+  --ink:#ECE9E1; --ink-soft:#9AA79C; --ink-faint:#5D6A5F; --line:#283026; --line-strong:#39443A;
+  --accent:#6FCB9F; --accent-2:#E0B36B; --accent-ink:#0B1310; --accent-soft:#1E3024;
+  --danger:#E28577; --danger-soft:#3A241F;
+  --shadow-ambient: 0 0 0;
+  --decor-op:.16;
   color-scheme: dark;
 }
 *{box-sizing:border-box;min-width:0}
 html,body{overflow-x:hidden}
-body{background:var(--canvas);color:var(--ink);font-family:'Manrope',sans-serif;padding-inline:16px;margin:0}
-.page{max-width:1180px;margin-inline:auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
+html{scroll-behavior:smooth}
+body{background:var(--canvas);color:var(--ink);font-family:'Manrope',sans-serif;padding-inline:16px;margin:0;transition:background .2s,color .2s}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+.bg-decor{position:fixed;inset:0;overflow:hidden;z-index:-1;pointer-events:none}
+.bg-decor span{position:absolute;border-radius:50%;filter:blur(90px);opacity:var(--decor-op)}
+.bg-decor span.a{width:520px;height:520px;background:var(--accent);top:-200px;left:-140px}
+.bg-decor span.b{width:460px;height:460px;background:var(--accent-2);bottom:-200px;right:-160px;opacity:calc(var(--decor-op) * .8)}
+
+.page{max-width:1200px;margin-inline:auto;padding-block:30px 64px;display:flex;flex-direction:column;gap:28px;position:relative}
 .mono{font-family:'IBM Plex Mono',monospace}
-header.top{display:flex;flex-direction:column;gap:6px}
-.brand{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(28px,5vw,38px);letter-spacing:-.01em;margin:0}
-.tagline{color:var(--ink-soft);font-size:15px;max-width:52ch;margin:0}
-.layout{display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start}
-@media (max-width:860px){.layout{grid-template-columns:1fr}}
+
+header.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand-group{display:flex;gap:14px;align-items:flex-start}
+.brand-mark{flex:none;width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:var(--accent-ink);box-shadow:0 8px 18px -8px rgba(var(--shadow-ambient),.5)}
+.brand-mark svg{width:23px;height:23px}
+.brand{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(28px,5vw,38px);letter-spacing:-.01em;margin:0 0 4px;line-height:1.1}
+.tagline{color:var(--ink-soft);font-size:15px;max-width:54ch;margin:0;line-height:1.5}
+.theme-toggle{flex:none;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-soft);transition:background .15s,color .15s,border-color .15s,transform .1s}
+.theme-toggle:hover{background:var(--surface-2);color:var(--ink);border-color:var(--line-strong)}
+.theme-toggle:active{transform:scale(.93)}
+.theme-toggle svg{width:19px;height:19px}
+.theme-toggle .moon{display:none}
+:root[data-theme="dark"] .theme-toggle .sun{display:none}
+:root[data-theme="dark"] .theme-toggle .moon{display:block}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .theme-toggle .sun{display:none}
+  :root:not([data-theme="light"]) .theme-toggle .moon{display:block}
+}
+
+.layout{display:grid;grid-template-columns:360px 1fr;gap:24px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
 .rail,.stage{min-width:0}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 1px 2px rgba(var(--shadow-ambient),.04)}
 .rail{display:flex;flex-direction:column;gap:18px}
-.section-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 10px}
-.dropzone{border:1.5px dashed var(--line);border-radius:12px;padding:20px 14px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.section-label{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 14px}
+.section-label svg{width:15px;height:15px;color:var(--accent);flex:none}
+
+.dropzone{border:1.5px dashed var(--line-strong);border-radius:14px;padding:26px 14px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;align-items:center;gap:8px}
+.dropzone svg{width:26px;height:26px;color:var(--ink-faint);transition:color .15s}
 .dropzone:hover,.dropzone.drag{border-color:var(--accent);background:var(--accent-soft)}
+.dropzone:hover svg,.dropzone.drag svg{color:var(--accent)}
 .dropzone p{margin:0;font-size:13.5px;color:var(--ink-soft)}
 .dropzone strong{color:var(--ink);display:block;margin-bottom:3px;font-size:14.5px}
 #file-input{display:none}
@@ -56,75 +90,125 @@ header.top{display:flex;flex-direction:column;gap:6px}
 .split-row .btn{padding:9px 14px;font-size:13px}
 .split-row input[type=number]{width:52px;padding:8px 6px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center}
 .split-row .note{font-size:13px;color:var(--ink-soft)}
-.img-row{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:7px 9px}
-.img-row img,.img-row canvas{width:40px;height:40px;object-fit:cover;border-radius:7px;flex:none;border:1px solid var(--line)}
+.img-row{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:7px 9px;transition:border-color .15s}
+.img-row:hover{border-color:var(--line-strong)}
+.img-row img,.img-row canvas{width:40px;height:40px;object-fit:cover;border-radius:8px;flex:none;border:1px solid var(--line)}
 .img-meta{flex:1;min-width:0}
 .img-meta .name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
 .img-meta .dims{font-size:11px;color:var(--ink-soft)}
-.chip{font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--brass);background:color-mix(in srgb, var(--brass) 16%, transparent);border-radius:5px;padding:2px 6px;flex:none}
-.iconbtn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:26px;height:26px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex:none;transition:background .15s,color .15s,border-color .15s}
-.iconbtn:hover{background:var(--accent-soft);border-color:var(--accent)}
+.chip{font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--accent-2);background:color-mix(in srgb, var(--accent-2) 16%, transparent);border-radius:5px;padding:2px 6px;flex:none}
+.iconbtn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:27px;height:27px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex:none;transition:background .15s,color .15s,border-color .15s}
+.iconbtn:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 .iconbtn.danger:hover{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
 .iconbtn:disabled{opacity:.35;cursor:default}
 .iconbtn:disabled:hover{background:var(--surface);border-color:var(--line);color:var(--ink)}
 .row-actions{display:flex;gap:4px;flex:none}
+
 .field{display:flex;flex-direction:column;gap:8px}
 .field-top{display:flex;justify-content:space-between;align-items:baseline}
 .field label{font-size:13px;font-weight:600}
 .field .val{font-size:12.5px;color:var(--ink-soft)}
 input[type=range]{width:100%;accent-color:var(--accent)}
-.swatches{display:flex;flex-wrap:wrap;gap:8px}
-.swatch{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);padding:0}
+input[type=range]:disabled{opacity:.4;cursor:not-allowed}
+
+.swatch-group{margin-bottom:16px}
+.swatch-group:last-child{margin-bottom:0}
+.swatch-group-label{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 9px}
+.swatches{display:flex;flex-wrap:wrap;gap:9px}
+.swatch{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);padding:0;transition:transform .12s,box-shadow .12s}
+.swatch:hover{transform:translateY(-2px)}
 .swatch.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
-.custom-stops{display:flex;align-items:center;gap:8px;margin-top:4px}
+.custom-stops{display:flex;align-items:center;gap:8px}
 .custom-stops input[type=color]{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);padding:0;background:none;cursor:pointer}
 .custom-stops span{font-size:12px;color:var(--ink-soft)}
+
 .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.seg button{flex:1;appearance:none;border:none;background:var(--surface);color:var(--ink-soft);font-family:inherit;font-size:13px;font-weight:600;padding:9px 6px;cursor:pointer;border-right:1px solid var(--line)}
+.seg button{flex:1;appearance:none;border:none;background:var(--surface);color:var(--ink-soft);font-family:inherit;font-size:13px;font-weight:600;padding:9px 6px;cursor:pointer;border-right:1px solid var(--line);transition:background .15s,color .15s}
 .seg button:last-child{border-right:none}
 .seg button.active{background:var(--accent-soft);color:var(--accent)}
+
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.switch-row .switch-text label{font-size:13px;font-weight:600;display:block;margin:0 0 2px}
+.switch-row .switch-text .note{margin:0}
+.switch{position:relative;width:42px;height:25px;flex:none;display:inline-block;cursor:pointer}
+.switch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.switch .track{position:absolute;inset:0;background:var(--surface-3);border:1px solid var(--line);border-radius:999px;transition:background .15s,border-color .15s;pointer-events:none}
+.switch .thumb{position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:var(--ink-faint);transition:transform .18s,background .15s}
+.switch input:checked + .track{background:var(--accent-soft);border-color:var(--accent)}
+.switch input:checked + .track .thumb{transform:translateX(17px);background:var(--accent)}
+.switch input:focus-visible + .track{outline:2px solid var(--accent);outline-offset:2px}
+
+.divider{border:none;border-top:1px solid var(--line);margin:16px 0 0}
+
 .stage{display:flex;flex-direction:column;gap:14px}
-.canvas-wrap{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:center;min-height:220px;min-width:0;width:100%;overflow:hidden}
+.canvas-wrap{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;align-items:center;justify-content:center;min-height:220px;min-width:0;width:100%;overflow:hidden;box-shadow:0 1px 2px rgba(var(--shadow-ambient),.04)}
 #stage-canvas{width:100%;max-width:100%;height:auto;border-radius:10px;display:block;min-width:0}
 .empty-hint{color:var(--ink-soft);font-size:14px;text-align:center;padding:40px 20px}
 .readout{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft)}
 .readout b{color:var(--ink);font-weight:600}
 .cta-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.btn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;padding:11px 18px;border-radius:11px;cursor:pointer;transition:transform .1s,background .15s}
+
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;padding:11px 18px;border-radius:12px;cursor:pointer;transition:transform .12s,background .15s,box-shadow .15s;display:inline-flex;align-items:center;gap:8px}
+.btn svg{width:16px;height:16px;flex:none}
 .btn:hover{background:var(--surface-2)}
 .btn:active{transform:translateY(1px)}
-.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.btn-primary:hover{filter:brightness(1.06)}
-.btn-primary:disabled{opacity:.45;cursor:default;filter:none}
+.btn-primary{background:linear-gradient(135deg,var(--accent),color-mix(in srgb, var(--accent) 55%, var(--accent-2) 45%));border-color:transparent;color:var(--accent-ink);box-shadow:0 6px 16px -6px color-mix(in srgb, var(--accent) 60%, transparent)}
+.btn-primary:hover{filter:brightness(1.07);transform:translateY(-1px);box-shadow:0 10px 20px -8px color-mix(in srgb, var(--accent) 65%, transparent)}
+.btn-primary:active{transform:translateY(1px)}
+.btn-primary:disabled{opacity:1;background:var(--surface-3);color:var(--ink-faint);border:1px solid var(--line);cursor:default;filter:none;box-shadow:none;transform:none}
 .btn-ghost{border-color:transparent;color:var(--ink-soft)}
 .btn-ghost:hover{background:var(--surface-2);color:var(--ink)}
 .note{font-size:12.5px;color:var(--ink-soft)}
-.gallery h2{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0 0 4px}
+
+.gallery h2{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0 0 4px;display:flex;align-items:center;gap:9px}
+.gallery h2 svg{width:17px;height:17px;color:var(--accent)}
 .gallery .note{margin-bottom:14px}
 .strip{display:flex;flex-wrap:wrap;gap:14px}
-.gcard{width:168px;background:var(--surface);border:1px solid var(--line);border-radius:13px;overflow:hidden;display:flex;flex-direction:column}
-.gcard .thumb{width:100%;height:96px;object-fit:cover;background:var(--surface-2);display:block}
+.gcard{width:172px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
+.gcard:hover{transform:translateY(-3px);box-shadow:0 12px 24px -10px rgba(var(--shadow-ambient),.35)}
+.gcard .thumb-wrap{overflow:hidden;background:var(--surface-2)}
+.gcard .thumb{width:100%;height:96px;object-fit:cover;display:block;transition:transform .25s}
+.gcard:hover .thumb{transform:scale(1.06)}
 .gcard .gbody{padding:10px;display:flex;flex-direction:column;gap:7px}
 .gcard .gdims{font-size:11px;color:var(--ink-soft)}
 .gcard .grow{display:flex;gap:6px}
-.gcard .grow .btn{flex:1;padding:7px 8px;font-size:12px;border-radius:8px}
+.gcard .grow .btn{flex:1;padding:7px 8px;font-size:12px;border-radius:9px;justify-content:center}
 .gempty{color:var(--ink-soft);font-size:13.5px;padding:10px 2px}
-footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;font-size:12.5px;color:var(--ink-soft)}
+
+footer.site{max-width:1200px;margin:0 auto;padding:22px 0 40px;text-align:center;font-size:12.5px;color:var(--ink-soft);border-top:1px solid var(--line)}
+footer.site span{color:var(--ink-faint)}
 </style>
 </head>
 <body>
 
+<div class="bg-decor" aria-hidden="true"><span class="a"></span><span class="b"></span></div>
+
 <div class="page">
-  <header class="top">
-    <h1 class="brand">Proof Sheet</h1>
-    <p class="tagline">Turn two or more screenshots into a clean side-by-side comparison card for your portfolio. Same width, same height, nothing stretched — the taller one is cropped automatically.</p>
+  <header class="topbar">
+    <div class="brand-group">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="18" rx="2"/><rect x="13" y="3" width="8" height="12" rx="2"/></svg>
+      </span>
+      <div>
+        <h1 class="brand">Proof Sheet</h1>
+        <p class="tagline">Turn two or more screenshots into a clean side-by-side comparison card for your portfolio. Same width, same height, nothing stretched — the taller one is cropped automatically.</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
   </header>
 
   <div class="layout">
     <div class="rail">
       <div class="panel">
-        <p class="section-label">Screenshots</p>
+        <p class="section-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5-5 5-3-3-4 4"/></svg>
+          Screenshots
+        </p>
         <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload screenshots">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-1-8.9A5.5 5.5 0 0 1 16.9 8H17a4 4 0 0 1 1 7.9"/><path d="M12 12v7M9 16l3-3 3 3"/></svg>
           <strong>Drop screenshots here</strong>
           <p>or click to choose files · PNG or JPG, 2 or more, left to right</p>
         </div>
@@ -134,7 +218,7 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
           <p class="split-label">Or split one tall screenshot into side-by-side panels</p>
           <div class="split-row">
             <button class="btn" id="split-pick-btn" type="button">Choose image</button>
-            <input type="number" id="split-count" min="2" max="8" value="2">
+            <input type="number" id="split-count" min="2" max="8" value="2" aria-label="Number of panels">
             <span class="note">panels</span>
           </div>
           <input id="split-file-input" type="file" accept="image/*" style="display:none">
@@ -142,17 +226,50 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
       </div>
 
       <div class="panel">
-        <p class="section-label">Background</p>
-        <div class="swatches" id="swatches"></div>
-        <div class="custom-stops">
-          <input type="color" id="custom1" value="#efe4d2" title="First color">
-          <input type="color" id="custom2" value="#d8c6a8" title="Second color">
+        <p class="section-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="7" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10" r="1.2" fill="currentColor" stroke="none"/><path d="M8 15a3 3 0 0 0 4 2 2 2 0 0 1 2-3 2 2 0 0 0 1.7-3"/></svg>
+          Background
+        </p>
+        <div id="swatches-wrap"></div>
+
+        <hr class="divider">
+
+        <div class="field" style="margin-top:16px">
+          <div class="field-top"><label for="angle-slider">Gradient angle</label><span class="val mono" id="angle-val">135°</span></div>
+          <input type="range" id="angle-slider" min="0" max="360" step="5" value="135">
+        </div>
+
+        <div class="field" style="margin-top:14px">
+          <label>Gradient shape</label>
+          <div class="seg" id="shape-seg">
+            <button data-shape="linear" class="active" type="button">Linear</button>
+            <button data-shape="radial" type="button">Radial</button>
+          </div>
+        </div>
+
+        <div class="switch-row" style="margin-top:16px">
+          <div class="switch-text">
+            <label for="grain-toggle">Grain texture</label>
+            <p class="note">Subtle noise for a printed, less-flat look</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="grain-toggle">
+            <span class="track"><span class="thumb"></span></span>
+          </label>
+        </div>
+
+        <div class="custom-stops" style="margin-top:16px">
+          <input type="color" id="custom1" value="#f4eee2" title="First color">
+          <input type="color" id="custom2" value="#d9cba8" title="Second color">
           <span>custom gradient</span>
         </div>
       </div>
 
       <div class="panel" style="display:flex;flex-direction:column;gap:18px">
-        <p class="section-label" style="margin-bottom:0">Card settings</p>
+        <p class="section-label" style="margin-bottom:0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="8" cy="7" r="1.8" fill="var(--surface)"/><circle cx="15" cy="12" r="1.8" fill="var(--surface)"/><circle cx="10" cy="17" r="1.8" fill="var(--surface)"/></svg>
+          Card settings
+        </p>
         <div class="field">
           <div class="field-top"><label for="width-slider">Card width</label><span class="val mono" id="width-val">800 px</span></div>
           <input type="range" id="width-slider" min="300" max="1400" step="10" value="800">
@@ -168,12 +285,12 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
         <div class="field">
           <label>Keep this part when cropping</label>
           <div class="seg" id="align-seg">
-            <button data-align="top" class="active">Top</button>
-            <button data-align="center">Center</button>
-            <button data-align="bottom">Bottom</button>
+            <button data-align="top" class="active" type="button">Top</button>
+            <button data-align="center" type="button">Center</button>
+            <button data-align="bottom" type="button">Bottom</button>
           </div>
         </div>
-        <button class="btn btn-ghost" id="reset-btn" style="align-self:flex-start">Start over</button>
+        <button class="btn btn-ghost" id="reset-btn" style="align-self:flex-start" type="button">Start over</button>
       </div>
     </div>
 
@@ -181,53 +298,80 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
       <div class="canvas-wrap" id="canvas-wrap">
         <canvas id="stage-canvas"></canvas>
       </div>
-      <div class="readout mono" id="readout"></div>
+      <div class="readout mono" id="readout" aria-live="polite"></div>
       <div class="cta-row">
-        <button class="btn btn-primary" id="save-btn">Add to my mockups &amp; download</button>
-        <span class="note" id="save-note"></span>
+        <button class="btn btn-primary" id="save-btn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 18v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+          Add to my mockups &amp; download
+        </button>
+        <span class="note" id="save-note" aria-live="polite"></span>
       </div>
     </div>
   </div>
 
   <div class="gallery panel">
-    <h2>My mockups</h2>
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5-5 5-3-3-4 4"/></svg>
+      My mockups
+    </h2>
     <p class="note">Everything you've made this session. Click Download again anytime to save it once more.</p>
     <div class="strip" id="gallery-strip"><p class="gempty">Nothing here yet — build a mockup above and add it here.</p></div>
   </div>
 </div>
 
-<footer class="site">Proof Sheet &middot; runs entirely in your browser, nothing is uploaded anywhere</footer>
+<footer class="site">Proof Sheet <span>·</span> runs entirely in your browser, nothing is uploaded anywhere</footer>
 
 <script>
 (function(){
   "use strict";
 
-  const PRESETS = {
-    beige:    ["#efe4d2", "#d8c6a8"],
-    sand:     ["#f2e2c8", "#d9b98a"],
-    white:    ["#ffffff", "#e7eaf0"],
-    coral:    ["#ffb199", "#e8694a"],
-    amber:    ["#ffd98a", "#e0a23c"],
-    rose:     ["#f7c6d9", "#d6587f"],
-    pink:     ["#ffd9e6", "#f6a9c4"],
-    sage:     ["#d7e4c5", "#a8bd84"],
-    mint:     ["#dff3e6", "#b9dcc4"],
-    teal:     ["#cdeee6", "#4fae9a"],
-    sky:      ["#cfe8fb", "#7fb8e8"],
-    lavender: ["#e3d9f5", "#b79fdb"],
-    navy:     ["#16264f", "#060b1f"],
-    charcoal: ["#3a3f47", "#1b1e22"],
-  };
+  const PRESET_GROUPS = [
+    { label: "Neutral", items: {
+      linen:      ["#F4EEE2", "#D9CBA8"],
+      stone:      ["#E9E4D8", "#AEA68F"],
+      fog:        ["#EDEFF3", "#B6C0CC"],
+    }},
+    { label: "Warm", items: {
+      terracotta: ["#F2A65A", "#B5472B"],
+      amber:      ["#FFD684", "#C9780C"],
+      coral:      ["#FFB199", "#C1432A"],
+      sunset:     ["#FFCF86", "#E0557A"],
+    }},
+    { label: "Cool", items: {
+      sky:        ["#D3EAFB", "#3A7CA5"],
+      ocean:      ["#8ED0E8", "#124C6B"],
+      mint:       ["#D7F4DE", "#2F8F5B"],
+      teal:       ["#BDEBDD", "#136F63"],
+    }},
+    { label: "Jewel", items: {
+      plum:       ["#D9A6FF", "#5A189A"],
+      emerald:    ["#74D6A6", "#13432D"],
+      sapphire:   ["#5FD4EE", "#0B3C8A"],
+      rose:       ["#FFBAD2", "#B01E52"],
+      burgundy:   ["#E68A6C", "#6E1E2E"],
+    }},
+    { label: "Dark", items: {
+      midnight:   ["#2A3A5C", "#0A0F1E"],
+      charcoal:   ["#5B6472", "#191C20"],
+      espresso:   ["#8A6A4E", "#2B1B14"],
+    }},
+  ];
+  const PRESET_MAP = {};
+  PRESET_GROUPS.forEach(g => Object.entries(g.items).forEach(([k,v]) => PRESET_MAP[k] = v));
 
   const state = {
     images: [],            // {src, width, height, name, demo}
-    bg: "beige",
-    customStops: ["#efe4d2", "#d8c6a8"],
+    bg: "linen",
+    customStops: ["#f4eee2", "#d9cba8"],
+    bgMode: "linear",       // "linear" | "radial"
+    angle: 135,
+    grain: false,
     cardWidth: 800,
     gap: 60,
     margin: 100,
     align: "top",
     saved: [],              // {blob, url, filename, w, h}
+    _grainTile: null,
   };
 
   // ---------- demo placeholder generator ----------
@@ -265,8 +409,8 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
   }
 
   function loadDemoImages(){
-    const a = drawWireframe(900, 1820, "#4C7EF3", "Example A");
-    const b = drawWireframe(900, 1280, "#2EAF8B", "Example B");
+    const a = drawWireframe(900, 1820, "#2F6B52", "Example A");
+    const b = drawWireframe(900, 1280, "#B8843C", "Example B");
     state.images = [
       { src: a, width: a.width, height: a.height, name: "Example A", demo: true },
       { src: b, width: b.width, height: b.height, name: "Example B", demo: true },
@@ -296,7 +440,50 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
   }
 
   function currentStops(){
-    return state.bg === "custom" ? state.customStops : PRESETS[state.bg];
+    return state.bg === "custom" ? state.customStops : PRESET_MAP[state.bg];
+  }
+
+  function makeBackgroundGradient(ctx, totalW, totalH){
+    const [s1, s2] = currentStops();
+    if (state.bgMode === "radial"){
+      const r = Math.sqrt(totalW*totalW + totalH*totalH) / 2;
+      const g = ctx.createRadialGradient(totalW/2, totalH/2, 0, totalW/2, totalH/2, r);
+      g.addColorStop(0, s1); g.addColorStop(1, s2);
+      return g;
+    }
+    const rad = (state.angle || 0) * Math.PI / 180;
+    const cx = totalW/2, cy = totalH/2;
+    const len = Math.abs(Math.cos(rad))*totalW + Math.abs(Math.sin(rad))*totalH;
+    const x1 = cx - Math.cos(rad)*len/2, y1 = cy - Math.sin(rad)*len/2;
+    const x2 = cx + Math.cos(rad)*len/2, y2 = cy + Math.sin(rad)*len/2;
+    const g = ctx.createLinearGradient(x1, y1, x2, y2);
+    g.addColorStop(0, s1); g.addColorStop(1, s2);
+    return g;
+  }
+
+  function getGrainTile(){
+    if (state._grainTile) return state._grainTile;
+    const tile = document.createElement("canvas");
+    tile.width = 128; tile.height = 128;
+    const tctx = tile.getContext("2d");
+    const imgData = tctx.createImageData(128, 128);
+    for (let i = 0; i < imgData.data.length; i += 4){
+      const v = Math.random() * 255;
+      imgData.data[i] = v; imgData.data[i+1] = v; imgData.data[i+2] = v; imgData.data[i+3] = 20;
+    }
+    tctx.putImageData(imgData, 0, 0);
+    state._grainTile = tile;
+    return tile;
+  }
+
+  function drawGrain(ctx, w, h){
+    const pattern = ctx.createPattern(getGrainTile(), "repeat");
+    ctx.save();
+    ctx.globalAlpha = 0.55;
+    ctx.globalCompositeOperation = "overlay";
+    ctx.fillStyle = pattern;
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
   }
 
   function render(){
@@ -326,10 +513,9 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    const [s1, s2] = currentStops();
-    const grad = ctx.createLinearGradient(0,0,L.totalW,L.totalH);
-    grad.addColorStop(0, s1); grad.addColorStop(1, s2);
-    ctx.fillStyle = grad; ctx.fillRect(0,0,L.totalW,L.totalH);
+    ctx.fillStyle = makeBackgroundGradient(ctx, L.totalW, L.totalH);
+    ctx.fillRect(0,0,L.totalW,L.totalH);
+    if (state.grain) drawGrain(ctx, L.totalW, L.totalH);
 
     let x = state.margin;
     const y = state.margin;
@@ -410,6 +596,7 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
 
   function iconBtn(label, disabled, onClick){
     const b = document.createElement("button");
+    b.type = "button";
     b.className = "iconbtn"; b.textContent = label; b.disabled = disabled;
     b.addEventListener("click", onClick);
     return b;
@@ -468,20 +655,35 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
 
   // ---------- controls ----------
   function buildSwatches(){
-    const wrap = document.getElementById("swatches");
-    Object.keys(PRESETS).forEach(key => {
-      const [a,b] = PRESETS[key];
-      const btn = document.createElement("button");
-      btn.className = "swatch" + (state.bg === key ? " active" : "");
-      btn.style.background = "linear-gradient(135deg," + a + "," + b + ")";
-      btn.title = key;
-      btn.addEventListener("click", () => {
-        state.bg = key;
-        [...wrap.children].forEach(c => c.classList.remove("active"));
-        btn.classList.add("active");
-        render();
+    const wrap = document.getElementById("swatches-wrap");
+    wrap.innerHTML = "";
+    PRESET_GROUPS.forEach(group => {
+      const groupEl = document.createElement("div");
+      groupEl.className = "swatch-group";
+      const label = document.createElement("p");
+      label.className = "swatch-group-label";
+      label.textContent = group.label;
+      groupEl.appendChild(label);
+
+      const row = document.createElement("div");
+      row.className = "swatches";
+      Object.entries(group.items).forEach(([key, stops]) => {
+        const [a,b] = stops;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "swatch" + (state.bg === key ? " active" : "");
+        btn.style.background = "linear-gradient(135deg," + a + "," + b + ")";
+        btn.title = key.charAt(0).toUpperCase() + key.slice(1);
+        btn.addEventListener("click", () => {
+          state.bg = key;
+          document.querySelectorAll(".swatch").forEach(c => c.classList.remove("active"));
+          btn.classList.add("active");
+          render();
+        });
+        row.appendChild(btn);
       });
-      wrap.appendChild(btn);
+      groupEl.appendChild(row);
+      wrap.appendChild(groupEl);
     });
   }
 
@@ -489,6 +691,7 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
     const widthSlider = document.getElementById("width-slider");
     const gapSlider = document.getElementById("gap-slider");
     const marginSlider = document.getElementById("margin-slider");
+    const angleSlider = document.getElementById("angle-slider");
 
     widthSlider.addEventListener("input", () => {
       state.cardWidth = Number(widthSlider.value);
@@ -505,6 +708,11 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
       document.getElementById("margin-val").textContent = state.margin + " px";
       render();
     });
+    angleSlider.addEventListener("input", () => {
+      state.angle = Number(angleSlider.value);
+      document.getElementById("angle-val").textContent = state.angle + "°";
+      render();
+    });
 
     document.getElementById("align-seg").addEventListener("click", (e) => {
       const btn = e.target.closest("button[data-align]");
@@ -512,6 +720,21 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
       state.align = btn.dataset.align;
       [...e.currentTarget.children].forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      render();
+    });
+
+    document.getElementById("shape-seg").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-shape]");
+      if (!btn) return;
+      state.bgMode = btn.dataset.shape;
+      [...e.currentTarget.children].forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      angleSlider.disabled = state.bgMode === "radial";
+      render();
+    });
+
+    document.getElementById("grain-toggle").addEventListener("change", (e) => {
+      state.grain = e.target.checked;
       render();
     });
 
@@ -551,6 +774,29 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
       loadDemoImages();
       renderImgList(); render();
     });
+
+    document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
+  }
+
+  // ---------- theme ----------
+  function readStoredTheme(){
+    try { return localStorage.getItem("proofsheet-theme"); } catch(e){ return null; }
+  }
+  function storeTheme(v){
+    try { localStorage.setItem("proofsheet-theme", v); } catch(e){ /* ignore */ }
+  }
+  function initTheme(){
+    const saved = readStoredTheme();
+    if (saved === "light" || saved === "dark"){
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+  }
+  function toggleTheme(){
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const current = document.documentElement.getAttribute("data-theme") || (prefersDark ? "dark" : "light");
+    const next = current === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    storeTheme(next);
   }
 
   // ---------- save / gallery (plain browser download, works on GitHub Pages or any host) ----------
@@ -599,17 +845,22 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
     state.saved.forEach((entry, idx) => {
       const card = document.createElement("div");
       card.className = "gcard";
+      const thumbWrap = document.createElement("div");
+      thumbWrap.className = "thumb-wrap";
       const img = document.createElement("img");
       img.className = "thumb"; img.src = entry.url;
+      thumbWrap.appendChild(img);
       const body = document.createElement("div");
       body.className = "gbody";
       body.innerHTML = '<div class="gdims mono">' + entry.w + ' × ' + entry.h + ' px</div>';
       const rowBtns = document.createElement("div");
       rowBtns.className = "grow";
       const saveAgain = document.createElement("button");
+      saveAgain.type = "button";
       saveAgain.className = "btn"; saveAgain.textContent = "Download";
       saveAgain.addEventListener("click", () => resaveEntry(entry));
       const remove = document.createElement("button");
+      remove.type = "button";
       remove.className = "btn btn-ghost"; remove.textContent = "Remove";
       remove.addEventListener("click", () => {
         URL.revokeObjectURL(entry.url);
@@ -618,12 +869,13 @@ footer.site{max-width:1180px;margin:0 auto;padding:0 0 40px;text-align:center;fo
       });
       rowBtns.append(saveAgain, remove);
       body.appendChild(rowBtns);
-      card.append(img, body);
+      card.append(thumbWrap, body);
       strip.appendChild(card);
     });
   }
 
   // ---------- init ----------
+  initTheme();
   loadDemoImages();
   buildSwatches();
   wireControls();
